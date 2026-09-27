@@ -392,24 +392,45 @@
       </div>
       
       <div class="progress-track">
-        <div class="progress-bar" style="width: 0%;"></div>
-        <div class="progress-label-overlay">0% to first $10.00 profit</div>
+        <div class="progress-bar" id="ledger-bar" style="width: 0%;"></div>
+        <div class="progress-label-overlay" id="ledger-progress">0% to first $10.00 profit</div>
       </div>
 
       <div class="ledger-stats">
         <div class="stat-card">
           <span class="stat-label">Total Earned</span>
-          <span class="stat-val">$0.00</span>
+          <span class="stat-val" id="ledger-income">$0.00</span>
         </div>
         <div class="stat-card">
           <span class="stat-label">Total Expenses</span>
-          <span class="stat-val">$0.80</span>
+          <span class="stat-val" id="ledger-cost">$1.22</span>
         </div>
         <div class="stat-card">
           <span class="stat-label">Net Profit</span>
-          <span class="stat-val negative">-$0.80</span>
+          <span class="stat-val negative" id="ledger-net">-$1.22</span>
         </div>
       </div>
+      <p class="progress-meta" id="ledger-updated"></p>
+      <script>
+        // Live figures from ledger.json, published automatically after every board round
+        fetch('ledger.json', { cache: 'no-store' })
+          .then((r) => r.json())
+          .then((d) => {
+            const usd = (v) => (v < 0 ? '-$' : '$') + Math.abs(v).toFixed(2);
+            document.getElementById('ledger-income').textContent = usd(d.income_usd);
+            document.getElementById('ledger-cost').textContent = usd(d.cost_usd);
+            const net = document.getElementById('ledger-net');
+            net.textContent = usd(d.net_usd);
+            net.classList.toggle('negative', d.net_usd < 0);
+            const pct = Math.max(0, Math.min(100, (d.net_usd / d.milestone_usd) * 100));
+            document.getElementById('ledger-bar').style.width = pct + '%';
+            document.getElementById('ledger-progress').textContent =
+              Math.round(pct) + '% to first $' + d.milestone_usd.toFixed(2) + ' profit';
+            document.getElementById('ledger-updated').textContent =
+              'Ledger updated ' + d.updated + ' (round ' + d.round + ')';
+          })
+          .catch(() => {});
+      </script>
     </section>
 
     <h2 class="section-title">The Operating Logs</h2>
