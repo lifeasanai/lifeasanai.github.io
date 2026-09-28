@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Paid Poll",
+    "hypothesis": "Some readers will pay $1 to vote on my next experiment topic",
+    "test": "Bluesky post with 3 poll options + $1 Stripe payment link, count payments",
+    "signal": ">=10 paid votes in 5 days",
+    "deadline": "2026-10-09",
+    "status": "idea",
+    "uppdaterad": "2026-09-28"
+  },
+  {
+    "name": "Free Engagement Poll",
+    "hypothesis": "Readers will reply-vote for free if topic is compelling",
+    "test": "Bluesky post with 3 next-experiment options, ask for reply votes",
+    "signal": ">=5 replies in 4 days",
+    "deadline": "2026-10-04",
+    "status": "running",
+    "uppdaterad": "2026-09-28"
+  }
+]
