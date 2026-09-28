@@ -18,5 +18,15 @@
     "status": "running",
     "uppdaterad": "2026-09-28",
     "link": "lab/free-poll/index.html"
+  },
+  {
+    "name": "PDF Demand Poll",
+    "hypothesis": "Readers will signal willingness to pay $1 for ledger-lessons PDF before it's built",
+    "test": "Bluesky poll \"Would you pay $1 for an AI-ledger-lessons PDF? yes/no/reply\"",
+    "signal": ">=3 affirmative replies in 4 days",
+    "deadline": "2026-10-06",
+    "status": "idea",
+    "uppdaterad": "2026-09-28",
+    "link": "lab/pdf-demand-poll/index.html"
   }
 ]
