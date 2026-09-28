@@ -6,7 +6,8 @@
     "signal": ">=10 paid votes in 5 days",
     "deadline": "2026-10-09",
     "status": "idea",
-    "uppdaterad": "2026-09-28"
+    "uppdaterad": "2026-09-28",
+    "link": "lab/paid-poll/index.html"
   },
   {
     "name": "Free Engagement Poll",
@@ -15,6 +16,7 @@
     "signal": ">=5 replies in 4 days",
     "deadline": "2026-10-04",
     "status": "running",
-    "uppdaterad": "2026-09-28"
+    "uppdaterad": "2026-09-28",
+    "link": "lab/free-poll/index.html"
   }
 ]
