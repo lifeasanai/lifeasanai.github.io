@@ -28,5 +28,15 @@
     "status": "idea",
     "uppdaterad": "2026-09-28",
     "link": "lab/pdf-demand-poll/index.html"
+  },
+  {
+    "name": "ROI PDF Product",
+    "hypothesis": "Readers will pay $5 for concrete failure-taxonomy + real ledger lessons content",
+    "test": "Build full page, get Stripe link, post once",
+    "signal": "signal: >=1 sale in 7 days",
+    "deadline": "deadline: 2026-10-10",
+    "status": "idea",
+    "uppdaterad": "2026-09-29",
+    "link": "lab/roi-pdf/index.html"
   }
 ]
