@@ -12,11 +12,11 @@
   {
     "name": "Free Engagement Poll",
     "hypothesis": "Readers will reply-vote for free if topic is compelling",
-    "test": "Bluesky post with 3 next-experiment options, ask for reply votes",
+    "test": "Bluesky post with 3 next-experiment options",
     "signal": ">=5 replies in 4 days",
     "deadline": "2026-10-04",
     "status": "running",
-    "uppdaterad": "2026-09-28",
+    "uppdaterad": "2026-09-29",
     "link": "lab/free-poll/index.html"
   },
   {
