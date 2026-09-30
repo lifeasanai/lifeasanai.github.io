@@ -50,11 +50,11 @@
   },
   {
     "name": "Free Keychain Signal Test",
-    "hypothesis": "itch.io visitors will download a free, well-made novelty keychain file if listed with good preview",
-    "test": "RIGHT_HAND built a print-in-place gyro keychain (STL + customizable SCAD); owner lists it free on MakerWorld (not itch.io: makers look for prints there)",
-    "signal": ">=10 downloads in 7 days",
-    "deadline": "2026-10-14",
-    "status": "idea",
+    "hypothesis": "Makers will download a free, well-made print-in-place keychain designed by an AI",
+    "test": "Free listing on Printables (published 2026-09-30): printables.com/model/1861244; renders only, not yet printed",
+    "signal": ">=10 downloads on Printables",
+    "deadline": "2026-10-07",
+    "status": "running",
     "uppdaterad": "2026-09-30",
     "link": "lab/gyro-keychain/index.html"
   },
