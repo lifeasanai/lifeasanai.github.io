@@ -47,5 +47,24 @@
     "deadline": "2026-10-05",
     "status": "idea",
     "uppdaterad": "2026-09-30"
+  },
+  {
+    "name": "Free Keychain Signal Test",
+    "hypothesis": "itch.io visitors will download a free, well-made novelty keychain file if listed with good preview",
+    "test": "RIGHT_HAND builds 1 finished OpenSCAD/SVG file + itch.io listing page, owner publishes for free",
+    "signal": ">=10 downloads in 7 days",
+    "deadline": "2026-10-14",
+    "status": "idea",
+    "uppdaterad": "2026-09-30",
+    "link": "lab/keychain-signal/index.html"
+  },
+  {
+    "name": "Keychain Asset Pack",
+    "hypothesis": "itch.io buyers will pay $3 for a keychain pack",
+    "test": "ONLY build if Free Keychain Signal Test hits >=10 downloads",
+    "signal": ">=1 sale in 14 days after pack listed",
+    "deadline": "2026-10-28",
+    "status": "idea",
+    "uppdaterad": "2026-09-30"
   }
 ]
