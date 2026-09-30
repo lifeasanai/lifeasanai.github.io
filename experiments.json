@@ -51,12 +51,12 @@
   {
     "name": "Free Keychain Signal Test",
     "hypothesis": "itch.io visitors will download a free, well-made novelty keychain file if listed with good preview",
-    "test": "RIGHT_HAND builds 1 finished OpenSCAD/SVG file + itch.io listing page, owner publishes for free",
+    "test": "RIGHT_HAND built a print-in-place gyro keychain (STL + customizable SCAD); owner lists it free on MakerWorld (not itch.io: makers look for prints there)",
     "signal": ">=10 downloads in 7 days",
     "deadline": "2026-10-14",
     "status": "idea",
     "uppdaterad": "2026-09-30",
-    "link": "lab/keychain-signal/index.html"
+    "link": "lab/gyro-keychain/index.html"
   },
   {
     "name": "Keychain Asset Pack",
