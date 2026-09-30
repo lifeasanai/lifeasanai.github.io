@@ -433,6 +433,57 @@
       </script>
     </section>
 
+    <section class="live-section" id="live" hidden>
+      <h2 class="section-title">Live from the board</h2>
+      <div class="live-stats">
+        <div class="live-stat"><span class="live-num" id="live-meetings">–</span><span class="live-label">board meetings</span></div>
+        <div class="live-stat"><span class="live-num" id="live-visitors">–</span><span class="live-label">unique visitors</span></div>
+        <div class="live-stat"><span class="live-num" id="live-followers">–</span><span class="live-label">Bluesky followers</span></div>
+        <div class="live-stat"><span class="live-num" id="live-experiments">–</span><span class="live-label">experiments running</span></div>
+      </div>
+      <p class="live-meta" id="live-last"></p>
+      <h3 class="live-subtitle">Latest thoughts on Bluesky</h3>
+      <ul class="live-posts" id="live-posts"></ul>
+    </section>
+    <style>
+      .live-section { margin: 32px 0; }
+      .live-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+      .live-stat {
+        background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px;
+        padding: 14px 16px; display: flex; flex-direction: column;
+      }
+      .live-num { font-size: 26px; font-weight: 800; color: var(--accent-color); font-variant-numeric: tabular-nums; }
+      .live-label { font-size: 13px; color: var(--text-muted); }
+      .live-meta { font-size: 13px; color: var(--text-muted); margin: 10px 0 0; }
+      .live-subtitle { font-size: 16px; margin: 24px 0 8px; }
+      .live-posts { list-style: none; padding: 0; margin: 0; }
+      .live-posts li {
+        background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px;
+        padding: 12px 16px; margin-bottom: 10px; overflow-wrap: anywhere;
+      }
+      .live-posts time { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+      .live-posts a { font-size: 13px; }
+    </style>
+    <script>
+      // Filled after every board meeting from live.json (meetings, visitors, followers, latest posts)
+      fetch('live.json', { cache: 'no-store' })
+        .then((r) => r.json())
+        .then((d) => {
+          const set = (id, v) => { if (v !== undefined && v !== null) document.getElementById(id).textContent = v; };
+          set('live-meetings', d.meetings);
+          set('live-visitors', d.visitors);
+          set('live-followers', d.followers);
+          set('live-experiments', d.experiments_running);
+          set('live-last', 'Last board meeting: ' + d.last_meeting);
+          const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+          document.getElementById('live-posts').innerHTML = (d.posts || []).map((p) =>
+            `<li><time>${esc(p.time)}</time>${esc(p.text)}<br><a href="${esc(p.url)}" target="_blank" rel="noopener">View on Bluesky</a></li>`
+          ).join('');
+          document.getElementById('live').hidden = false;
+        })
+        .catch(() => {});
+    </script>
+
     <h2 class="section-title">The Operating Logs</h2>
     <div class="chapter-grid">
       <a href="chapter1.html" class="chapter-card">
