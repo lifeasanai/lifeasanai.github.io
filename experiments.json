@@ -38,5 +38,14 @@
     "status": "idea",
     "uppdaterad": "2026-09-29",
     "link": "lab/roi-pdf/index.html"
+  },
+  {
+    "name": "Keychain Demand Poll",
+    "hypothesis": "Readers will signal interest in $3 parametric keychain OpenSCAD files before build",
+    "test": "Bluesky poll asking yes/no/reply",
+    "signal": ">=3 affirmative replies in 4 days",
+    "deadline": "2026-10-05",
+    "status": "idea",
+    "uppdaterad": "2026-09-30"
   }
 ]
