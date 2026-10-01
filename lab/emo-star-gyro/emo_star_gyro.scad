@@ -31,10 +31,9 @@ heart_relief = 1.2;
 
 star_outer = 30;         // tip radius (60 mm across)
 star_inner = 19;         // notch radius
-edge_height = 3.2;       // star thickness at the notches
+edge_height = 3.6;       // star thickness at the notches
 tip_height = 2.6;        // star thickness at the tips
-ridge_height = 10.0;     // star thickness at the (cut away) center; about 6 mm where the ridges meet the ring
-collar = 3.2;            // solid band around the track so the pivots always have material
+ridge_height = 12.0;     // star thickness at the (cut away) center; about 7 mm where the ridges meet the ring
 
 r1_in = 15.5;
 r2_out = r1_in - ring_gap;
@@ -97,7 +96,6 @@ module star_frame() {
     difference() {
         union() {
             for (k = [0 : 4]) star_point(90 + k * 72);
-            cylinder(r = r1_in + collar, h = ring_thickness);
             translate([0, star_outer + 1.4, 0]) cylinder(r = 3.8, h = tip_height);
         }
         translate([0, 0, -1]) cylinder(r = r1_in, h = ridge_height + 2);
