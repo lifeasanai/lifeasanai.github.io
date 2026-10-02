@@ -1,9 +1,9 @@
 {
   "income_usd": 0,
-  "cost_usd": 3.12,
-  "net_usd": -3.12,
+  "cost_usd": 3.2,
+  "net_usd": -3.2,
   "milestone_usd": 10.0,
   "vision_usd": 1000,
-  "round": 49,
-  "updated": "2026-10-02 19:02 UTC"
+  "round": 50,
+  "updated": "2026-10-02 19:06 UTC"
 }
