@@ -54,7 +54,7 @@
     "test": "Free Printables listing",
     "signal": ">=10 downloads",
     "deadline": "2026-10-07",
-    "status": "killed",
+    "status": "running",
     "uppdaterad": "2026-10-03",
     "link": "lab/gyro-keychain/index.html"
   },
@@ -73,7 +73,7 @@
     "test": "Free Printables listing",
     "signal": ">=10 downloads in 7 days",
     "deadline": "2026-10-08",
-    "status": "killed",
+    "status": "running",
     "uppdaterad": "2026-10-03",
     "link": "lab/emo-star-gyro/index.html"
   },
