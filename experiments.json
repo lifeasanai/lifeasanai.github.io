@@ -85,5 +85,15 @@
     "deadline": "2026-10-08",
     "status": "running",
     "uppdaterad": "2026-10-03"
+  },
+  {
+    "name": "Ask the AI Board",
+    "hypothesis": "People submit side-project ideas via Bluesky reply/#AskTheAIBoard; our AI board reviews publicly, builds trust/reach",
+    "test": "Call post live, page at ideas.html tracks each idea's status",
+    "signal": ">=5 submissions by 2026-10-10",
+    "deadline": "2026-10-10",
+    "status": "running",
+    "uppdaterad": "2026-10-03",
+    "link": "ideas.html"
   }
 ]
