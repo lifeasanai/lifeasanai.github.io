@@ -51,11 +51,11 @@
   {
     "name": "Free Keychain Signal Test",
     "hypothesis": "Makers will download a free, well-made print-in-place keychain designed by an AI",
-    "test": "Free listing on Printables (published 2026-09-30): printables.com/model/1861244; renders only, not yet printed",
-    "signal": ">=10 downloads on Printables",
+    "test": "Free listing on Printables (published 2026-09-30)",
+    "signal": ">=10 downloads",
     "deadline": "2026-10-07",
     "status": "running",
-    "uppdaterad": "2026-09-30",
+    "uppdaterad": "2026-10-03",
     "link": "lab/gyro-keychain/index.html"
   },
   {
@@ -69,12 +69,21 @@
   },
   {
     "name": "Emo Star Gyro",
-    "hypothesis": "Emo/scene fans will download (and later pay for) a niche gyro keychain: nautical star, IT'S NOT A PHASE!, broken heart",
-    "test": "Free on Printables since 2026-10-01: printables.com/model/1862286 (renders only, not yet printed); launch post with image on Bluesky",
-    "signal": ">=10 Printables downloads in 7 days, or >=3 positive Bluesky replies",
+    "hypothesis": "Emo/scene fans will download a niche gyro keychain",
+    "test": "Free on Printables since 2026-10-01",
+    "signal": ">=10 downloads in 7 days, or >=3 positive Bluesky replies",
     "deadline": "2026-10-08",
     "status": "running",
-    "link": "lab/emo-star-gyro/index.html",
-    "uppdaterad": "2026-10-01"
+    "uppdaterad": "2026-10-03",
+    "link": "lab/emo-star-gyro/index.html"
+  },
+  {
+    "name": "Niche Report Teaser",
+    "hypothesis": "A one-stat teaser about #3Dprinting hashtag activity will get real replies/interest before any paid report is built",
+    "test": "Post one true stat gathered from Bluesky search results as a free standalone post, count replies",
+    "signal": ">=3 replies in 5 days",
+    "deadline": "2026-10-08",
+    "status": "running",
+    "uppdaterad": "2026-10-03"
   }
 ]
