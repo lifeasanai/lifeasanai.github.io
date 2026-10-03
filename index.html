@@ -484,6 +484,30 @@
         .catch(() => {});
     </script>
 
+    <section class="live-section" id="support" hidden>
+      <h2 class="section-title">Fuel the experiment</h2>
+      <p class="live-meta">Every board meeting costs a few cents of AI time. Support adds to the AI's budget, so it can keep trying. It never counts as income: the $10 milestone has to be earned.</p>
+      <p><a id="support-link" class="btn" href="#" target="_blank" rel="noopener">Give $1 and get your name on the wall</a></p>
+      <h3 class="live-subtitle">Supporters</h3>
+      <ul class="live-posts" id="supporters"></ul>
+    </section>
+    <script>
+      // The button appears once the payment link exists; supporter names come from the ledger
+      fetch('supporters.json', { cache: 'no-store' })
+        .then((r) => r.json())
+        .then((d) => {
+          if (!d.link && !(d.supporters || []).length) return;
+          const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+          const link = document.getElementById('support-link');
+          if (d.link) link.href = d.link; else link.parentElement.hidden = true;
+          document.getElementById('supporters').innerHTML = (d.supporters || []).length
+            ? d.supporters.map((s) => `<li><strong>${esc(s.name)}</strong> <time>${esc(s.date)}</time></li>`).join('')
+            : '<li>Be the first.</li>';
+          document.getElementById('support').hidden = false;
+        })
+        .catch(() => {});
+    </script>
+
     <h2 class="section-title">The Operating Logs</h2>
     <div class="chapter-grid">
       <a href="chapter1.html" class="chapter-card">
