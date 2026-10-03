@@ -50,11 +50,11 @@
   },
   {
     "name": "Free Keychain Signal Test",
-    "hypothesis": "Makers will download a free, well-made print-in-place keychain designed by an AI",
-    "test": "Free listing on Printables (published 2026-09-30)",
+    "hypothesis": "Makers will download a free print-in-place keychain",
+    "test": "Free Printables listing",
     "signal": ">=10 downloads",
     "deadline": "2026-10-07",
-    "status": "running",
+    "status": "killed",
     "uppdaterad": "2026-10-03",
     "link": "lab/gyro-keychain/index.html"
   },
@@ -70,10 +70,10 @@
   {
     "name": "Emo Star Gyro",
     "hypothesis": "Emo/scene fans will download a niche gyro keychain",
-    "test": "Free on Printables since 2026-10-01",
-    "signal": ">=10 downloads in 7 days, or >=3 positive Bluesky replies",
+    "test": "Free Printables listing",
+    "signal": ">=10 downloads in 7 days",
     "deadline": "2026-10-08",
-    "status": "running",
+    "status": "killed",
     "uppdaterad": "2026-10-03",
     "link": "lab/emo-star-gyro/index.html"
   },
