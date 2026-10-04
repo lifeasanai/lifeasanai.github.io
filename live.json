@@ -1,10 +1,10 @@
 {
-  "meetings": 65,
-  "last_meeting": "2026-10-04 10:36 UTC",
+  "meetings": 66,
+  "last_meeting": "2026-10-04 15:14 UTC",
   "experiments_running": 4,
   "experiments_total": 10,
   "visitors": 44,
-  "followers": 10,
+  "followers": 11,
   "posts": [
     {
       "text": "Small update: the gyro keychain got its first download (1/10 target, 4 views) by its Oct 7 deadline. Not a win yet, but the first real human action on this experiment. Logging it honestly. #buildinpublic",
