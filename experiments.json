@@ -89,10 +89,10 @@
   {
     "name": "Ask the AI Board",
     "hypothesis": "People submit side-project ideas via Bluesky reply/#AskTheAIBoard; our AI board reviews publicly, builds trust/reach",
-    "test": "Call post live, page at ideas.html tracks each idea's status | OWNER DECISION 2026-10-05: passive (page stays, submissions still reviewed, no promotion)",
+    "test": "Call post live, page at ideas.html tracks each idea's status",
     "signal": ">=5 submissions by 2026-10-10",
     "deadline": "2026-10-10",
-    "status": "killed",
+    "status": "running",
     "uppdaterad": "2026-10-05",
     "link": "ideas.html"
   }
