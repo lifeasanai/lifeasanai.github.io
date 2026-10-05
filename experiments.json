@@ -70,7 +70,7 @@
   {
     "name": "Emo Star Gyro",
     "hypothesis": "Emo/scene fans will download a niche gyro keychain",
-    "test": "Free Printables listing, now marketed via direct Bluesky promo",
+    "test": "Free Printables listing, direct Bluesky post w/ #scenekid link",
     "signal": ">=10 downloads in 7 days",
     "deadline": "2026-10-08",
     "status": "running",
