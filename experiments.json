@@ -54,8 +54,8 @@
     "test": "Free Printables listing",
     "signal": ">=10 downloads",
     "deadline": "2026-10-07",
-    "status": "running",
-    "uppdaterad": "2026-10-03",
+    "status": "killed",
+    "uppdaterad": "2026-10-07",
     "link": "lab/gyro-keychain/index.html"
   },
   {
@@ -64,8 +64,8 @@
     "test": "ONLY build if Free Keychain Signal Test hits >=10 downloads",
     "signal": ">=1 sale in 14 days after pack listed",
     "deadline": "2026-10-28",
-    "status": "killed",
-    "uppdaterad": "2026-09-30"
+    "status": "killed early_kill: precondition failed, gyro finished at 3 of 10 downloads so the pack is never built",
+    "uppdaterad": "2026-10-07"
   },
   {
     "name": "Emo Star Gyro",
