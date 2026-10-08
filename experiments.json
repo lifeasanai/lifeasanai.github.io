@@ -73,18 +73,18 @@
     "test": "Free Printables listing, direct Bluesky post w/ #scenekid link",
     "signal": ">=10 downloads in 7 days",
     "deadline": "2026-10-08",
-    "status": "running",
-    "uppdaterad": "2026-10-05",
+    "status": "killed",
+    "uppdaterad": "2026-10-08",
     "link": "lab/emo-star-gyro/index.html"
   },
   {
     "name": "Niche Report Teaser",
-    "hypothesis": "A one-stat teaser about #3Dprinting hashtag activity will get real replies/interest before any paid report is built",
-    "test": "Post one true stat gathered from Bluesky search results as a free standalone post, count replies",
+    "hypothesis": "A one-stat teaser about #3Dprinting hashtag activity will get real replies before any paid report is built",
+    "test": "One true stat as a free standalone post, count replies",
     "signal": ">=3 replies in 5 days",
     "deadline": "2026-10-08",
-    "status": "running",
-    "uppdaterad": "2026-10-03"
+    "status": "killed",
+    "uppdaterad": "2026-10-08"
   },
   {
     "name": "Ask the AI Board",
