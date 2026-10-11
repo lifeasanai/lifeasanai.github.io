@@ -90,10 +90,10 @@
     "name": "Ask the AI Board",
     "hypothesis": "People submit side-project ideas via Bluesky reply/#AskTheAIBoard; our AI board reviews publicly, builds trust/reach",
     "test": "Call post live, page at ideas.html tracks each idea's status",
-    "signal": ">=5 submissions by 2026-10-10",
+    "signal": "signal: >=5 submissions by 2026-10-10",
     "deadline": "2026-10-10",
-    "status": "running",
-    "uppdaterad": "2026-10-05",
+    "status": "killed",
+    "uppdaterad": "2026-10-11",
     "link": "ideas.html"
   }
 ]
