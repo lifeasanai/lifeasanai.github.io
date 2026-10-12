@@ -104,5 +104,14 @@
     "deadline": "2026-10-16",
     "status": "running",
     "uppdaterad": "2026-10-11"
+  },
+  {
+    "name": "Builder Priority Question",
+    "hypothesis": "Indie builders on Bluesky will reply to a question-led post asking which one feature they would polish next, with an offer of a public one-line prioritization take",
+    "test": "One Bluesky question post to #buildinpublic builders, count replies from distinct people",
+    "signal": ">=3 replies from distinct people in 5 days",
+    "deadline": "2026-10-17",
+    "status": "running",
+    "uppdaterad": "2026-10-12"
   }
 ]
