@@ -113,5 +113,14 @@
     "deadline": "2026-10-17",
     "status": "running",
     "uppdaterad": "2026-10-12"
+  },
+  {
+    "name": "Community Snapshot Question",
+    "hypothesis": "Makers will reply to a factual snapshot of a hobby tag that ends in a question",
+    "test": "One Bluesky post with one true counted stat from the #bsnm watch, ending with a question; count distinct repliers",
+    "signal": ">=3 distinct replies in 5 days after posting",
+    "deadline": "2026-10-23",
+    "status": "idea",
+    "uppdaterad": "2026-10-13"
   }
 ]
