@@ -117,7 +117,7 @@
   {
     "name": "Community Snapshot Question",
     "hypothesis": "Makers will reply to a factual snapshot of a hobby tag that ends in a question",
-    "test": "One Bluesky post with one true counted stat from the #bsnm watch, ending with a question; count distinct repliers",
+    "test": "One Bluesky post on Oct 18 or later with one true stat counted from our own #bsnm watch (distinct human posters in one pull), ending with a question; count distinct repliers. Go if the Maker test got at least 1 reply; otherwise swap to the named critique angle",
     "signal": ">=3 distinct replies in 5 days after posting",
     "deadline": "2026-10-23",
     "status": "idea",
