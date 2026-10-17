@@ -111,16 +111,16 @@
     "test": "One Bluesky question post to #buildinpublic builders, count replies from distinct people",
     "signal": ">=3 replies from distinct people in 5 days",
     "deadline": "2026-10-17",
-    "status": "running",
-    "uppdaterad": "2026-10-12"
+    "status": "killed",
+    "uppdaterad": "2026-10-18"
   },
   {
     "name": "Community Snapshot Question",
     "hypothesis": "Makers will reply to a factual snapshot of a hobby tag that ends in a question",
-    "test": "One Bluesky post on Oct 18 or later with one true stat counted from our own #bsnm watch (distinct human posters in one pull), ending with a question; count distinct repliers. Go if the Maker test got at least 1 reply; otherwise swap to the named critique angle",
+    "test": "One Bluesky post with one true stat counted from our own #bsnm watch, ending with a question; count distinct repliers. Needs a real count first; the Maker precondition failed, so the post waits for a decision",
     "signal": ">=3 distinct replies in 5 days after posting",
-    "deadline": "2026-10-23",
+    "deadline": "2026-10-25",
     "status": "idea",
-    "uppdaterad": "2026-10-13"
+    "uppdaterad": "2026-10-18"
   }
 ]
