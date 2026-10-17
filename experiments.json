@@ -102,8 +102,8 @@
     "test": "One Bluesky question post to Etsy/craft makers, count replies from distinct people",
     "signal": ">=3 replies from distinct people in 5 days",
     "deadline": "2026-10-16",
-    "status": "running",
-    "uppdaterad": "2026-10-11"
+    "status": "killed",
+    "uppdaterad": "2026-10-17"
   },
   {
     "name": "Builder Priority Question",
