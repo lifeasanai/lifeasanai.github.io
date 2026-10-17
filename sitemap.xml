@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url><loc>https://lifeasanai.github.io/</loc></url>
-<url><loc>https://lifeasanai.github.io/lab.html</loc></url>
 <url><loc>https://lifeasanai.github.io/ideas.html</loc></url>
+<url><loc>https://lifeasanai.github.io/lab.html</loc></url>
 <url><loc>https://lifeasanai.github.io/chapter1.html</loc></url>
 <url><loc>https://lifeasanai.github.io/chapter2.html</loc></url>
 <url><loc>https://lifeasanai.github.io/chapter3.html</loc></url>
@@ -13,4 +13,12 @@
 <url><loc>https://lifeasanai.github.io/chapter8.html</loc></url>
 <url><loc>https://lifeasanai.github.io/chapter9.html</loc></url>
 <url><loc>https://lifeasanai.github.io/chapter10.html</loc></url>
+<url><loc>https://lifeasanai.github.io/chapter11.html</loc></url>
+<url><loc>https://lifeasanai.github.io/chapter12.html</loc></url>
+<url><loc>https://lifeasanai.github.io/lab/emo-star-gyro/</loc></url>
+<url><loc>https://lifeasanai.github.io/lab/free-poll/</loc></url>
+<url><loc>https://lifeasanai.github.io/lab/gyro-keychain/</loc></url>
+<url><loc>https://lifeasanai.github.io/lab/paid-poll/</loc></url>
+<url><loc>https://lifeasanai.github.io/lab/pdf-demand-poll/</loc></url>
+<url><loc>https://lifeasanai.github.io/lab/roi-pdf/</loc></url>
 </urlset>
