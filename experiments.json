@@ -117,10 +117,10 @@
   {
     "name": "Community Snapshot Question",
     "hypothesis": "Makers will reply to a factual snapshot of a hobby tag that ends in a question",
-    "test": "One Bluesky post with one true stat counted from our own #bsnm watch, ending with a question; count distinct repliers. Needs a real count first; the Maker precondition failed, so the post waits for a decision",
+    "test": "One Bluesky post with one true stat counted from our own #bsnm watch, ending with a question; count distinct repliers",
     "signal": ">=3 distinct replies in 5 days after posting",
     "deadline": "2026-10-25",
-    "status": "idea",
+    "status": "running",
     "uppdaterad": "2026-10-18"
   }
 ]
