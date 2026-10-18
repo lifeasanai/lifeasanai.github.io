@@ -125,11 +125,12 @@
   },
   {
     "name": "Race HUD Kit",
-    "hypothesis": "Indie web-game devs will use or download a ready-made race HUD and post-race flow component",
-    "test": "RIGHT_HAND research first; then a free working prototype in lab/ and count downloads or uses",
+    "hypothesis": "Indie web-game devs will use or download a drop-in race HUD plus post-race flow module that is faster than writing their own",
+    "test": "RIGHT_HAND builds a free working demo in lab/race-hud/ with a zip download; count downloads or uses",
     "signal": ">=10 downloads or uses, or >=1 sale, in 14 days after launch",
     "deadline": "2026-11-08",
-    "status": "idea",
-    "uppdaterad": "2026-10-18"
+    "status": "running",
+    "uppdaterad": "2026-10-18",
+    "link": "lab/race-hud/index.html"
   }
 ]
