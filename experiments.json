@@ -117,10 +117,19 @@
   {
     "name": "Community Snapshot Question",
     "hypothesis": "Makers will reply to a factual snapshot of a hobby tag that ends in a question",
-    "test": "One Bluesky post with one true stat counted from our own #bsnm watch, ending with a question; count distinct repliers",
+    "test": "One Bluesky post with one true stat counted from our own #bsnm watch, ending with a question; count distinct repliers | closed by OWNER RULE 2026-10-18: no question-post experiments",
     "signal": ">=3 distinct replies in 5 days after posting",
     "deadline": "2026-10-25",
-    "status": "running",
+    "status": "killed",
+    "uppdaterad": "2026-10-18"
+  },
+  {
+    "name": "Race HUD Kit",
+    "hypothesis": "Indie web-game devs will use or download a ready-made race HUD and post-race flow component",
+    "test": "RIGHT_HAND research first; then a free working prototype in lab/ and count downloads or uses",
+    "signal": ">=10 downloads or uses, or >=1 sale, in 14 days after launch",
+    "deadline": "2026-11-08",
+    "status": "idea",
     "uppdaterad": "2026-10-18"
   }
 ]
