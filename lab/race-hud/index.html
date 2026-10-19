@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="data:,">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Race HUD Kit: lap, wrong-way and results for web games</title>
+<style>
+  html, body { margin: 0; background: #101418; color: #ddd; font-family: Arial, Helvetica, sans-serif; }
+  #wrap { max-width: 900px; margin: 0 auto; padding: 8px; text-align: center; }
+  canvas { width: 100%; height: auto; background: #2a6b36; display: block; border-radius: 6px; }
+  p { margin: 6px 0; font-size: 14px; }
+  #log { text-align: left; background: #0a0c14; color: #9fe8b0; font: 12px/1.4 Consolas, monospace; padding: 8px; border-radius: 6px; margin: 6px 0; height: 120px; overflow: hidden; white-space: pre; }
+  kbd { background: #333; padding: 1px 6px; border-radius: 3px; }
+  h1 { font-size: 20px; margin: 4px 0 8px; }
+  .btn { display: inline-block; background: #ffd23f; color: #111; padding: 8px 14px; border-radius: 5px; text-decoration: none; font-weight: bold; margin: 4px; }
+  .btn.alt { background: #2d3a4a; color: #fff; }
+  #tested { text-align: left; background: #151b22; border-radius: 6px; padding: 6px 14px; font-size: 14px; }
+  #tested li { margin: 3px 0; }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <h1>Race HUD Kit: lap, wrong-way and results for web games</h1>
+  <p><a class="btn" id="run-test" href="?autoplay=1">Run edge-case test</a> <a class="btn alt" id="dl-zip" href="racekit-hud.zip" download>Download zip</a> <a class="btn alt" href="index.html">Drive it yourself</a></p>
+  <canvas id="c" width="800" height="450"></canvas>
+  <p><kbd>&uarr;</kbd> gas &nbsp; <kbd>&darr;</kbd> brake &nbsp; <kbd>&larr;</kbd><kbd>&rarr;</kbd> steer &nbsp; <kbd>Enter</kbd> start &nbsp; <kbd>W</kbd> toggle wrong-way test (only shown while racing) &nbsp; Touch: tap the canvas, then use the on-screen buttons. &nbsp; After the race: <kbd>R</kbd> restart, <kbd>N</kbd> next race (or click).</p>
+  <div id="log" aria-label="Live event log"></div>
+  <p>Race 3 laps around the oval. Checkpoints sit at the bottom, left and top: cutting across the infield gives "lap invalid". Add <code>?autoplay=1</code> to the URL to watch an unattended edge-case run (wrong-way, shortcut lap rejected, DNF, results). Your best times are saved in this browser. The wrong-way warning needs the car to move (speed above 25) against the flow of traffic; press <kbd>W</kbd> to force it while testing.</p>
+  <div id="tested">
+    <strong>What is tested</strong> (<code>python test_race_core.py</code>, 7 tests):
+    <ul>
+      <li>Race state machine and event API: countdown, start, checkpoint, lap, finish, personal best, route.</li>
+      <li><code>onLapInvalid</code>: a shortcut lap is rejected with "missed checkpoint 2".</li>
+      <li><code>onWrongWay</code>: fires when the car drives against the track direction.</li>
+      <li><code>reportDnf</code>: a bot that crashes out gets a DNF row in the results.</li>
+      <li>Results screen: finish, DNF, best lap, restart / next race.</li>
+      <li>This page in headless Chrome: zero console errors in a full unattended run.</li>
+    </ul>
+  </div>
+</div>
+<script src="racekit-hud.iife.js"></script>
+<script>
+(function () {
+  var RK = window.RaceKit;
+  var canvas = document.getElementById('c');
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+  var CX = W / 2, CY = H / 2, RX = 300, RY = 150, HALF = 40; // track centre line ellipse, half width
+  var TAU = Math.PI * 2;
+
+  var store = null;
+  try { store = window.localStorage; store.getItem('x'); } catch (e) { store = null; }
+
+  var AUTO = /[?&]autoplay=1/.test((window.location && window.location.search) || '');
+  var tracks = [{ id: 'oval-a', ai: [0.9, 0.8, 0.7] }, { id: 'oval-b', ai: [1.0, 0.92, 0.84] }];
+  var trackIx = 0;
+  var race = new RK.RaceSession({ laps: 3, countdownSeconds: AUTO ? 1 : 3, checkpoints: 3, trackId: 'demo-oval', storage: store, nextRaces: ['oval-b'] });
+  var hud = new RK.RaceHud(race);
+
+  var START = -0.12; // start angle (just before the line at angle 0)
+  var car, bots;
+  function theta(x, y) { return Math.atan2((y - CY) / RY, (x - CX) / RX); }
+  function resetCars() {
+    car = { x: CX + RX * Math.cos(START), y: CY + RY * Math.sin(START), a: Math.PI / 2 + 0.1, v: 0, th: START, prog: 0 };
+    bots = tracks[trackIx].ai.map(function (k, i) {
+      return { name: 'Bot ' + (i + 1), id: 'bot' + i, k: k, th: START - 0.06 * (i + 1), prog: -0.06 * (i + 1), lane: (i - 1) * 18, done: false };
+    });
+    race.totalRacers = bots.length + 1;
+  }
+  resetCars();
+  race.on('onReset', function () { resetCars(); lastCp = 0; armed = false; });
+  race.on('onRoute', function (r) { if (r.action === 'next') { trackIx = (trackIx + 1) % tracks.length; resetCars(); } });
+  // Live event log: every API event, newest last
+  var logEl = document.getElementById('log'), logLines = [];
+  function logEvent(name, text) {
+    logLines.push((race.raceTime || 0).toFixed(1).padStart(5) + 's  ' + name + (text ? '  ' + text : ''));
+    if (logLines.length > 8) logLines.shift();
+    logEl.textContent = logLines.join('\n');
+  }
+  race.on('onCountdown', function (e) { logEvent('onCountdown', String(e.value)); });
+  race.on('onStart', function () { logEvent('onStart'); });
+  race.on('onCheckpoint', function (e) { logEvent('onCheckpoint', e.index + '/' + e.total); });
+  race.on('onLap', function (l) { logEvent('onLap', 'lap ' + l.lap + ' ' + RK.formatTime(l.time) + (l.isBestLap ? ' (best)' : '')); });
+  race.on('onLapInvalid', function (e) { logEvent('onLapInvalid', e.reason); });
+  race.on('onWrongWay', function (e) { logEvent('onWrongWay', e.active ? 'ON' : 'off'); });
+  race.on('onFinish', function (e) { logEvent('onFinish', RK.formatTime(e.time) + ' pos ' + e.position); });
+  race.on('onPersonalBest', function (e) { logEvent('onPersonalBest', 'race ' + (e.race !== null) + ' lap ' + (e.lap !== null)); });
+  race.on('onRoute', function (e) { logEvent('onRoute', e.action); });
+  race.on('onReset', function () { logLines = []; logEl.textContent = ''; logEvent('onReset'); });
+
+  var keys = {}, forceWrong = false;
+  window.addEventListener('keydown', function (e) {
+    var k = e.key;
+    if (k.indexOf('Arrow') === 0 || k === ' ') e.preventDefault();
+    keys[k] = true;
+    if (k === 'Enter') race.start();
+    if (k === 'w' || k === 'W') forceWrong = !forceWrong;
+    if (race.phase === 'finished') hud.key(k);
+  });
+  window.addEventListener('keyup', function (e) { keys[e.key] = false; });
+  canvas.addEventListener('click', function (e) {
+    var r = canvas.getBoundingClientRect();
+    var x = (e.clientX - r.left) * W / r.width, y = (e.clientY - r.top) * H / r.height;
+    if (!hud.click(x, y) && race.phase === 'idle') race.start();
+  });
+
+  // Touch controls: four on-canvas buttons, shown after the first touch. Multi-touch via pointer ids.
+  var BTN = [
+    { k: 'ArrowLeft', label: '<', x: 16, y: 354, w: 80, h: 80 },
+    { k: 'ArrowRight', label: '>', x: 106, y: 354, w: 80, h: 80 },
+    { k: 'ArrowDown', label: 'BRAKE', x: 604, y: 354, w: 88, h: 80 },
+    { k: 'ArrowUp', label: 'GAS', x: 702, y: 354, w: 82, h: 80 }
+  ];
+  var touchOn = false, ptrs = {}, tk = {};
+  function toCanvas(e) {
+    var r = canvas.getBoundingClientRect();
+    return { x: (e.clientX - r.left) * W / r.width, y: (e.clientY - r.top) * H / r.height };
+  }
+  function recomputeTouch() {
+    tk = {};
+    Object.keys(ptrs).forEach(function (id) {
+      var p = ptrs[id];
+      BTN.forEach(function (b) { if (p.x >= b.x && p.x <= b.x + b.w && p.y >= b.y && p.y <= b.y + b.h) tk[b.k] = true; });
+    });
+  }
+  function ptrDown(e) {
+    if (e.pointerType !== 'touch') return;
+    touchOn = true; ptrs[e.pointerId] = toCanvas(e); recomputeTouch();
+    if (e.preventDefault) e.preventDefault();
+  }
+  function ptrMove(e) { if (ptrs[e.pointerId]) { ptrs[e.pointerId] = toCanvas(e); recomputeTouch(); } }
+  function ptrUp(e) { delete ptrs[e.pointerId]; recomputeTouch(); }
+  canvas.addEventListener('pointerdown', ptrDown);
+  canvas.addEventListener('pointermove', ptrMove);
+  canvas.addEventListener('pointerup', ptrUp);
+  canvas.addEventListener('pointercancel', ptrUp);
+  if (canvas.style) canvas.style.touchAction = 'none';
+
+  function drawTouch() {
+    if (!touchOn || race.phase === 'finished') return;
+    ctx.save(); ctx.textAlign = 'center'; ctx.font = 'bold 20px Arial';
+    BTN.forEach(function (b) {
+      ctx.fillStyle = tk[b.k] ? 'rgba(255,210,63,0.55)' : 'rgba(255,255,255,0.25)';
+      ctx.fillRect(b.x, b.y, b.w, b.h);
+      ctx.fillStyle = '#fff'; ctx.fillText(b.label, b.x + b.w / 2, b.y + b.h / 2 + 7);
+    });
+    ctx.restore();
+  }
+
+  function onTrack(x, y) {
+    var dx = (x - CX) / RX, dy = (y - CY) / RY;
+    var d = (Math.sqrt(dx * dx + dy * dy) - 1) * (RX + RY) / 2;
+    return Math.abs(d) <= HALF;
+  }
+
+  // ---- unattended edge-case run (?autoplay=1) ----
+  var CP = [Math.PI / 2, Math.PI, -Math.PI / 2];   // checkpoint 1..3 angles on the oval
+  var lastCp = 0, armed = false;
+  function wrap(a) { while (a > Math.PI) a -= TAU; while (a < -Math.PI) a += TAU; return a; }
+  var pilot = { stage: 0, t: 0, wrongT: 0, started: false, clock: 0 };
+  function aimAt(x, y) {
+    var err = wrap(Math.atan2(y - car.y, x - car.x) - car.a);
+    keys.ArrowLeft = err < -0.06; keys.ArrowRight = err > 0.06;
+  }
+  function onOval(th, dx) { return { x: CX + RX * Math.cos(th) + (dx || 0), y: CY + RY * Math.sin(th) }; }
+  function autopilot(dt) {
+    pilot.clock += dt;
+    if (!pilot.started && pilot.clock > 0.5 && race.phase === 'idle') { pilot.started = true; race.start(); }
+    keys.ArrowUp = race.inputEnabled; keys.ArrowDown = false;
+    if (!race.inputEnabled) { keys.ArrowLeft = keys.ArrowRight = false; return; }
+    if (!bots[2].done && race.raceTime > 8) { bots[2].done = true; race.reportDnf(bots[2].id, bots[2].name); } // Bot 3 crashes out
+    pilot.t += dt;
+    var th = car.th, p;
+    if (pilot.stage === 0) {                       // drive normally for a moment
+      p = onOval(th + 0.4); if (car.prog > 0.7) { pilot.stage = 1; pilot.t = 0; }
+    } else if (pilot.stage === 1) {                // U-turn: drive against the flow of traffic
+      p = onOval(th - 0.4);
+      if (race.wrongWay) pilot.wrongT += dt;
+      if (pilot.wrongT > 1.2 || pilot.t > 6) { pilot.stage = 2; pilot.t = 0; }
+    } else if (pilot.stage === 2) {                // turn back, go round to the bottom
+      p = onOval(th + 0.4); if (th > 1.35 && th < 2) { pilot.stage = 3; pilot.t = 0; }
+    } else if (pilot.stage === 3) {                // shortcut across the infield, skipping checkpoint 2
+      p = onOval(-Math.PI / 2, 40); if (th < -0.9 && th > -2.2 || pilot.t > 8) { pilot.stage = 4; pilot.t = 0; }
+    } else { p = onOval(th + 0.4); }
+    aimAt(p.x, p.y);
+  }
+
+  function step(dt) {
+    if (AUTO) autopilot(dt);
+    race.update(dt);
+    // player car
+    if (race.inputEnabled) {
+      if (keys.ArrowUp || tk.ArrowUp) car.v += 220 * dt;
+      if (keys.ArrowDown || tk.ArrowDown) car.v -= 300 * dt;
+      var steer = (keys.ArrowLeft || tk.ArrowLeft ? -1 : 0) + (keys.ArrowRight || tk.ArrowRight ? 1 : 0);
+      car.a += steer * 2.4 * dt * Math.min(1, Math.abs(car.v) / 80) * (car.v < 0 ? -1 : 1);
+    }
+    var grass = !onTrack(car.x, car.y);
+    var max = grass ? 90 : 260;
+    car.v -= car.v * 0.4 * dt;
+    if (car.v > max) car.v -= (car.v - max) * Math.min(1, 4 * dt);
+    if (car.v < -60) car.v = -60;
+    if (!race.inputEnabled) car.v *= Math.max(0, 1 - 3 * dt);
+    car.x += Math.cos(car.a) * car.v * dt;
+    car.y += Math.sin(car.a) * car.v * dt;
+
+    var nt = theta(car.x, car.y), d = nt - car.th;
+    if (d > Math.PI) d -= TAU; if (d < -Math.PI) d += TAU;
+    car.th = nt;
+    if (race.inputEnabled) {
+      if (Math.abs(d) < 1) car.prog += d;
+      // checkpoints must be crossed in order; the start line counts only going forward after leaving it
+      CP.forEach(function (a, i) {
+        if (Math.abs(wrap(nt - a)) < 0.25 && lastCp === i && onTrack(car.x, car.y) && race.crossCheckpoint(i + 1)) lastCp = i + 1;
+      });
+      if (Math.abs(nt) > 1.2) armed = true;
+      if (armed && nt >= 0 && nt - d < 0 && d > 0 && nt < 1) {
+        armed = false; lastCp = 0;
+        race.completeLap();
+      }
+      var tx = -RX * Math.sin(nt), ty = RY * Math.cos(nt);
+      var along = Math.cos(car.a) * tx + Math.sin(car.a) * ty;
+      var wrong = forceWrong || (Math.abs(car.v) > 25 && along * car.v < 0);
+      // bots
+      var ahead = 0;
+      bots.forEach(function (b) { if (b.prog > car.prog) ahead++; });
+      race.setState({ speed: Math.abs(car.v) * 0.5, position: ahead + 1, totalRacers: bots.length + 1, wrongWay: wrong });
+    }
+    // bots keep racing after the player finishes
+    if (race.phase === 'racing' || race.phase === 'finished') {
+      bots.forEach(function (b) {
+        if (b.done) return;
+        var w = 0.62 * b.k;
+        b.th += w * dt; b.prog += w * dt;
+        if (b.prog >= race.totalLaps * TAU) { b.done = true; race.reportFinish(b.id, b.name, race.raceTime); }
+      });
+    }
+  }
+
+  function carPos(b) {
+    var rx = RX + b.lane, ry = RY + b.lane;
+    return { x: CX + rx * Math.cos(b.th), y: CY + ry * Math.sin(b.th) };
+  }
+
+  function drawScene() {
+    ctx.fillStyle = '#2a6b36'; ctx.fillRect(0, 0, W, H);
+    ctx.lineWidth = HALF * 2; ctx.strokeStyle = '#555';
+    ctx.beginPath(); ctx.ellipse(CX, CY, RX, RY, 0, 0, TAU); ctx.stroke();
+    ctx.lineWidth = 3; ctx.strokeStyle = '#eee'; ctx.setLineDash([14, 14]);
+    ctx.beginPath(); ctx.ellipse(CX, CY, RX, RY, 0, 0, TAU); ctx.stroke(); ctx.setLineDash([]);
+    ctx.lineWidth = 6; ctx.strokeStyle = '#fff'; // start/finish line at angle 0
+    ctx.beginPath(); ctx.moveTo(CX + RX - HALF, CY); ctx.lineTo(CX + RX + HALF, CY); ctx.stroke();
+    bots.forEach(function (b, i) {
+      var p = carPos(b);
+      ctx.save(); ctx.translate(p.x, p.y);
+      ctx.rotate(Math.atan2(RY * Math.cos(b.th), -RX * Math.sin(b.th)));
+      ctx.fillStyle = ['#e44', '#4ae', '#c5e'][i % 3]; ctx.fillRect(-11, -6, 22, 12); ctx.restore();
+    });
+    ctx.save(); ctx.translate(car.x, car.y); ctx.rotate(car.a);
+    ctx.fillStyle = '#ffd23f'; ctx.fillRect(-12, -7, 24, 14);
+    ctx.fillStyle = '#222'; ctx.fillRect(2, -5, 6, 10); ctx.restore();
+    if (race.phase === 'idle') {
+      ctx.fillStyle = 'rgba(0,0,0,0.6)'; ctx.fillRect(0, H / 2 - 40, W, 80);
+      ctx.fillStyle = '#fff'; ctx.font = 'bold 28px Arial'; ctx.textAlign = 'center';
+      ctx.fillText('Press Enter or click to start  (' + tracks[trackIx].id + ')', W / 2, H / 2 + 10);
+    }
+  }
+
+  var last = null;
+  function frame(ts) {
+    var dt = last === null ? 0 : Math.min(0.05, (ts - last) / 1000);
+    last = ts;
+    if (!AUTO) step(dt);
+    drawScene();
+    hud.draw(ctx, W, H, dt);
+    drawTouch();
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  // Autoplay is driven by a timer, not by rAF (rAF is paused in some headless/background tabs): 8 sim steps per 33 ms.
+  // ?shot=mid|wrongway freezes the run at that moment so a screenshot can be taken (used by make_screenshots.py).
+  var SHOT = (/[?&]shot=(\w+)/.exec((window.location && window.location.search) || '') || [])[1] || '';
+  var frozen = false, wrongSince = 0;
+  function checkShot(dt) {
+    if (SHOT === 'mid' && race.raceTime > 6) frozen = true;
+    if (SHOT === 'wrongway') {
+      wrongSince = race.wrongWay ? wrongSince + dt : 0;
+      if (wrongSince > 0.8) frozen = true;
+    }
+  }
+  if (AUTO && window.setInterval) window.setInterval(function () {
+    for (var i = 0; i < 8 && !frozen; i++) { step(1 / 60); checkShot(1 / 60); }
+  }, 33);
+
+  window.__demo = { auto: AUTO, pilot: pilot, race: race, hud: hud, step: step, getCar: function () { return car; }, bots: function () { return bots; } };
+})();
+</script>
+  <script data-goatcounter="https://lifeasanai.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
