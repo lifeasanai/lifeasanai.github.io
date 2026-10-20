@@ -11,7 +11,7 @@ const PHASE = Object.freeze({
   FINISHED: 'finished',
 });
 
-const EVENTS = ['onCountdown', 'onStart', 'onLap', 'onFinish', 'onReset', 'onWrongWay', 'onPersonalBest', 'onRoute', 'onLapInvalid', 'onCheckpoint'];
+const EVENTS = ['onCountdown', 'onStart', 'onLap', 'onFinish', 'onReset', 'onWrongWay', 'onPersonalBest', 'onRoute', 'onLapInvalid', 'onCheckpoint', 'onResults'];
 
 class RaceSession {
   /**
@@ -54,7 +54,9 @@ class RaceSession {
   _clear() {
     this.phase = PHASE.IDLE;
     this.countdownLeft = 0;
-    this.raceTime = 0;
+    this.raceTime = 0;       // the player's race clock; stops at the player's finish
+    this.elapsed = 0;        // session race clock; keeps running after the player finishes until close()
+    this._closed = false;
     this.lap = 0;            // completed laps
     this.lapTime = 0;        // current lap timer
     this.lapTimes = [];
@@ -133,6 +135,9 @@ class RaceSession {
     if (this.phase === PHASE.RACING) {
       this.raceTime += dt;
       this.lapTime += dt;
+      this.elapsed += dt;
+    } else if (this.phase === PHASE.FINISHED && !this._closed) {
+      this.elapsed += dt;
     }
   }
 
@@ -186,23 +191,41 @@ class RaceSession {
     return info;
   }
 
-  /** Report an AI/remote racer finishing, so it shows in the results table. */
+  /**
+   * Report an AI/remote racer finishing, so it shows in the results table.
+   * Without an explicit `time` the core stamps its own `elapsed` clock (which keeps running after the player finishes).
+   */
   reportFinish(id, name, time) {
-    if (this.phase === PHASE.IDLE || this.phase === PHASE.COUNTDOWN) return false;
+    if (this.phase === PHASE.IDLE || this.phase === PHASE.COUNTDOWN || this._closed) return false;
     if (this.results.some((r) => r.id === id)) return false;
-    const t = typeof time === 'number' && isFinite(time) ? time : null; // missing time ranks last
+    const t = typeof time === 'number' && isFinite(time) ? time : this.elapsed;
     this.results.push({ id, name, time: t, bestLap: null, isPlayer: false, pb: false });
     this._rank();
+    this._emitResults();
     return true;
   }
 
   /** Report a racer who did not finish (crashed out, quit). Shown as DNF below all finishers. */
   reportDnf(id, name) {
-    if (this.phase === PHASE.IDLE || this.phase === PHASE.COUNTDOWN) return false;
+    if (this.phase === PHASE.IDLE || this.phase === PHASE.COUNTDOWN || this._closed) return false;
     if (this.results.some((r) => r.id === id)) return false;
     this.results.push({ id, name, time: null, bestLap: null, isPlayer: false, pb: false, dnf: true });
     this._rank();
+    this._emitResults();
     return true;
+  }
+
+  /** Stop accepting late reports and freeze `elapsed`. Call when the host is done waiting for other cars. */
+  close() {
+    if (this.phase !== PHASE.FINISHED || this._closed) return false;
+    this._closed = true;
+    this._emitResults();
+    return true;
+  }
+
+  _emitResults() {
+    if (this.phase !== PHASE.FINISHED) return;
+    this._emit('onResults', { results: this.results.map((r) => ({ ...r })), closed: this._closed });
   }
 
   _rank() {

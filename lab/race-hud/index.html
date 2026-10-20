@@ -233,7 +233,7 @@
         if (b.done) return;
         var w = 0.62 * b.k;
         b.th += w * dt; b.prog += w * dt;
-        if (b.prog >= race.totalLaps * TAU) { b.done = true; race.reportFinish(b.id, b.name, race.raceTime); }
+        if (b.prog >= race.totalLaps * TAU) { b.done = true; race.reportFinish(b.id, b.name); }
       });
     }
   }
