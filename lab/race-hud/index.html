@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <link rel="icon" href="data:,">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Race HUD Kit: lap, wrong-way and results for web games</title>
+<title>Race HUD Kit: lap timer, wrong-way, DNF results for web games</title>
+<meta name="description" content="Dependency-free JS race HUD kit for Canvas, Phaser and three.js: lap timer, wrong-way warning, DNF results, per-car clocks, onResults events. MIT licensed.">
 <style>
   html, body { margin: 0; background: #101418; color: #ddd; font-family: Arial, Helvetica, sans-serif; }
   #wrap { max-width: 900px; margin: 0 auto; padding: 8px; text-align: center; }
@@ -14,6 +15,9 @@
   kbd { background: #333; padding: 1px 6px; border-radius: 3px; }
   h1 { font-size: 20px; margin: 4px 0 8px; }
   .btn { display: inline-block; background: #ffd23f; color: #111; padding: 8px 14px; border-radius: 5px; text-decoration: none; font-weight: bold; margin: 4px; }
+  button.btn { border: 0; font-size: 14px; cursor: pointer; font-family: inherit; }
+  .cnt { font-weight: normal; font-size: 12px; opacity: .8; }
+  #snip { text-align: left; background: #0a0c14; color: #cde; font: 12px/1.4 Consolas, monospace; padding: 8px; border-radius: 6px; white-space: pre; overflow-x: auto; display: none; }
   .btn.alt { background: #2d3a4a; color: #fff; }
   #tested { text-align: left; background: #151b22; border-radius: 6px; padding: 6px 14px; font-size: 14px; }
   #tested li { margin: 3px 0; }
@@ -21,12 +25,15 @@
 </head>
 <body>
 <div id="wrap">
-  <h1>Race HUD Kit: lap, wrong-way and results for web games</h1>
-  <p><a class="btn" id="run-test" href="?autoplay=1">Run edge-case test</a> <a class="btn alt" id="dl-zip" href="racekit-hud.zip" download>Download zip</a> <a class="btn alt" href="index.html">Drive it yourself</a></p>
+  <h1>Race HUD Kit: lap timer, wrong-way, DNF results</h1>
+  <p id="lead">A tested event API for racing games: per-car clocks, live <code>onResults</code>, <code>close()</code>, and an edge-case suite (lap-invalid, wrong-way, DNF, duplicate finish ignored). The HUD drawing is the easy part; the demo below runs it.</p>
+  <p><a class="btn" id="run-test" href="?autoplay=1">Run edge-case test</a> <a class="btn alt" id="dl-zip" href="racekit-hud.zip" download>Download zip <span class="cnt" id="dl-count"></span></a> <button class="btn" id="copy-snippet" type="button">Copy integration snippet <span class="cnt" id="copy-count"></span></button> <a class="btn alt" href="index.html">Drive it yourself</a></p>
   <canvas id="c" width="800" height="450"></canvas>
   <p><kbd>&uarr;</kbd> gas &nbsp; <kbd>&darr;</kbd> brake &nbsp; <kbd>&larr;</kbd><kbd>&rarr;</kbd> steer &nbsp; <kbd>Enter</kbd> start &nbsp; <kbd>W</kbd> toggle wrong-way test (only shown while racing) &nbsp; Touch: tap the canvas, then use the on-screen buttons. &nbsp; After the race: <kbd>R</kbd> restart, <kbd>N</kbd> next race (or click).</p>
   <div id="log" aria-label="Live event log"></div>
   <p>Race 3 laps around the oval. Checkpoints sit at the bottom, left and top: cutting across the infield gives "lap invalid". Add <code>?autoplay=1</code> to the URL to watch an unattended edge-case run (wrong-way, shortcut lap rejected, DNF, results). Your best times are saved in this browser. The wrong-way warning needs the car to move (speed above 25) against the flow of traffic; press <kbd>W</kbd> to force it while testing.</p>
+  <pre id="snip"></pre>
+  <p style="font-size:12px;opacity:.8">Use counter: no cookies, no personal data. The numbers on the buttons are clicks counted in <em>your</em> browser only (localStorage). The page owner cannot see them: counting visits across users needs a server endpoint, and none is configured (see README).</p>
   <div id="tested">
     <strong>What is tested</strong> (<code>python test_race_core.py</code>, 7 tests):
     <ul>
@@ -40,6 +47,38 @@
   </div>
 </div>
 <script src="racekit-hud.iife.js"></script>
+<script>
+(function () {
+  var SNIPPET = '<script src="racekit-hud.iife.js"><\/script>\n<script>\n' +
+    'var race = new RaceKit.RaceSession({ laps: 3, trackId: "oval", storage: localStorage });\n' +
+    'var hud = new RaceKit.RaceHud(race);\n' +
+    'race.on("onResults", function (r) { console.log(r); });\n' +
+    'race.start(); // then each frame: race.update(dt); hud.draw(ctx, w, h, dt);\n' +
+    '<\/script>';
+  // Optional: set to your own URL to also send an anonymous beacon (no body, no cookies). Empty = local only.
+  var COUNT_ENDPOINT = '';
+  var store = null;
+  try { store = window.localStorage; store.getItem('x'); } catch (e) { store = null; }
+  function bump(name) {
+    try { store.setItem('rk-count-' + name, String((parseInt(store.getItem('rk-count-' + name), 10) || 0) + 1)); } catch (e) {}
+    if (COUNT_ENDPOINT && navigator.sendBeacon) { try { navigator.sendBeacon(COUNT_ENDPOINT + '?e=' + name); } catch (e) {} }
+  }
+  function show(id, name) {
+    var n = 0;
+    try { n = parseInt(store.getItem('rk-count-' + name), 10) || 0; } catch (e) {}
+    document.getElementById(id).textContent = n ? '(' + n + ' here)' : '';
+  }
+  show('dl-count', 'download'); show('copy-count', 'copy');
+  document.getElementById('dl-zip').addEventListener('click', function () { bump('download'); show('dl-count', 'download'); });
+  var snip = document.getElementById('snip');
+  snip.textContent = SNIPPET;
+  document.getElementById('copy-snippet').addEventListener('click', function () {
+    bump('copy'); show('copy-count', 'copy');
+    snip.style.display = 'block';
+    try { navigator.clipboard.writeText(SNIPPET).catch(function () {}); } catch (e) {}
+  });
+})();
+</script>
 <script>
 (function () {
   var RK = window.RaceKit;
