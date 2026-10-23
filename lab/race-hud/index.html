@@ -4,8 +4,10 @@
 <meta charset="utf-8">
 <link rel="icon" href="data:,">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Race HUD Kit: lap timer, wrong-way, DNF results for web games</title>
-<meta name="description" content="Dependency-free JS race HUD kit for Canvas, Phaser and three.js: lap timer, wrong-way warning, DNF results, per-car clocks, onResults events. MIT licensed.">
+<title>Stop rewriting lap timers: Race HUD Kit with lap timer, wrong-way, DNF results</title>
+<meta property="og:title" content="Stop rewriting lap timers: Race HUD Kit">
+<meta property="og:image" content="results.png">
+<meta name="description" content="Stop rewriting lap timers. Dependency-free JS race HUD kit for 2D Canvas (Phaser/three.js example pages are untested): lap timer, wrong-way warning, DNF results, per-car clocks, onResults events. MIT licensed.">
 <style>
   html, body { margin: 0; background: #101418; color: #ddd; font-family: Arial, Helvetica, sans-serif; }
   #wrap { max-width: 900px; margin: 0 auto; padding: 8px; text-align: center; }
@@ -17,8 +19,10 @@
   .btn { display: inline-block; background: #ffd23f; color: #111; padding: 8px 14px; border-radius: 5px; text-decoration: none; font-weight: bold; margin: 4px; }
   button.btn { border: 0; font-size: 14px; cursor: pointer; font-family: inherit; }
   .cnt { font-weight: normal; font-size: 12px; opacity: .8; }
-  #snip { text-align: left; background: #0a0c14; color: #cde; font: 12px/1.4 Consolas, monospace; padding: 8px; border-radius: 6px; white-space: pre; overflow-x: auto; display: none; }
+  #snip0, #snip { text-align: left; background: #0a0c14; color: #cde; font: 12px/1.4 Consolas, monospace; padding: 8px; border-radius: 6px; white-space: pre; overflow-x: auto; display: none; }
+  #snip0 { display: block; }
   .btn.alt { background: #2d3a4a; color: #fff; }
+  .badges span { display: inline-block; background: #1d3a2a; color: #9fe8b0; border-radius: 12px; padding: 2px 10px; margin: 2px; font-size: 12px; }
   #tested { text-align: left; background: #151b22; border-radius: 6px; padding: 6px 14px; font-size: 14px; }
   #tested li { margin: 3px 0; }
 </style>
@@ -26,7 +30,14 @@
 <body>
 <div id="wrap">
   <h1>Race HUD Kit: lap timer, wrong-way, DNF results</h1>
+  <p class="badges"><span>Canvas-based</span><span>Phaser / three.js example pages untested</span></p>
   <p id="lead">A tested event API for racing games: per-car clocks, live <code>onResults</code>, <code>close()</code>, and an edge-case suite (lap-invalid, wrong-way, DNF, duplicate finish ignored). The HUD drawing is the easy part; the demo below runs it.</p>
+  <img id="shot" src="results.png" alt="Results screen: You, Bot 1, Bot 2 with times, Bot 3 DNF" style="max-width:100%;border-radius:6px">
+  <pre id="snip0">&lt;script src="racekit-hud.iife.js"&gt;&lt;/script&gt;
+var race = new RaceKit.RaceSession({ laps: 3, trackId: "oval", storage: localStorage });
+var hud = new RaceKit.RaceHud(race);
+race.on("onResults", function (r) { console.log(r); });
+race.start(); // each frame: race.update(dt); hud.draw(ctx, w, h, dt);</pre>
   <p><a class="btn" id="run-test" href="?autoplay=1">Run edge-case test</a> <a class="btn alt" id="dl-zip" href="racekit-hud.zip" download>Download zip <span class="cnt" id="dl-count"></span></a> <button class="btn" id="copy-snippet" type="button">Copy integration snippet <span class="cnt" id="copy-count"></span></button> <a class="btn alt" href="index.html">Drive it yourself</a></p>
   <canvas id="c" width="800" height="450"></canvas>
   <p><kbd>&uarr;</kbd> gas &nbsp; <kbd>&darr;</kbd> brake &nbsp; <kbd>&larr;</kbd><kbd>&rarr;</kbd> steer &nbsp; <kbd>Enter</kbd> start &nbsp; <kbd>W</kbd> toggle wrong-way test (only shown while racing) &nbsp; Touch: tap the canvas, then use the on-screen buttons. &nbsp; After the race: <kbd>R</kbd> restart, <kbd>N</kbd> next race (or click).</p>
@@ -35,7 +46,7 @@
   <pre id="snip"></pre>
   <p style="font-size:12px;opacity:.8">Use counter: no cookies, no personal data. The numbers on the buttons are clicks counted in <em>your</em> browser only (localStorage). The page owner cannot see them: counting visits across users needs a server endpoint, and none is configured (see README).</p>
   <div id="tested">
-    <strong>What is tested</strong> (<code>python test_race_core.py</code>, 7 tests):
+    <strong>What is tested</strong> (<code>python test_race_core.py</code>, 8 tests):
     <ul>
       <li>Race state machine and event API: countdown, start, checkpoint, lap, finish, personal best, route.</li>
       <li><code>onLapInvalid</code>: a shortcut lap is rejected with "missed checkpoint 2".</li>
@@ -45,7 +56,9 @@
       <li>This page in headless Chrome: zero console errors in a full unattended run.</li>
     </ul>
   </div>
+  <div id="changelog" style="text-align:left;font-size:13px;margin-top:8px"><strong>Changelog</strong><br>0.2.0: per-car clocks, <code>onResults</code>, <code>close()</code>, copy button, zip with screenshots.<br>0.1.0: lap timer, checkpoints, wrong-way, DNF results, HUD, touch, typings.</div>
 </div>
+<script>(function () { var s = document.getElementById("shot"); if (s && s.style && /[?&](autoplay|shot)=/.test((window.location && window.location.search) || "")) s.style.display = "none"; })(); // keep README screenshots free of the embedded screenshot</script>
 <script src="racekit-hud.iife.js"></script>
 <script>
 (function () {
@@ -66,10 +79,11 @@
   function show(id, name) {
     var n = 0;
     try { n = parseInt(store.getItem('rk-count-' + name), 10) || 0; } catch (e) {}
-    document.getElementById(id).textContent = n ? '(' + n + ' here)' : '';
+    var el = document.getElementById(id); if (!el) return;
+    el.textContent = n ? '(' + n + ' here)' : '';
   }
   show('dl-count', 'download'); show('copy-count', 'copy');
-  document.getElementById('dl-zip').addEventListener('click', function () { bump('download'); show('dl-count', 'download'); });
+  var dl = document.getElementById('dl-zip'); if (dl) dl.addEventListener('click', function () { bump('download'); show('dl-count', 'download'); });
   var snip = document.getElementById('snip');
   snip.textContent = SNIPPET;
   document.getElementById('copy-snippet').addEventListener('click', function () {
@@ -126,6 +140,18 @@
   race.on('onFinish', function (e) { logEvent('onFinish', RK.formatTime(e.time) + ' pos ' + e.position); });
   race.on('onPersonalBest', function (e) { logEvent('onPersonalBest', 'race ' + (e.race !== null) + ' lap ' + (e.lap !== null)); });
   race.on('onRoute', function (e) { logEvent('onRoute', e.action); });
+  // Autoplay self-check: every car must be listed with distinct finish times, else console.error (caught by the browser test).
+  if (AUTO) {
+    race.on('onResults', function (ev) {
+      var rs = ev.results;
+      if (rs.length < 4) return;
+      var t = rs.filter(function (r) { return !r.dnf; }).map(function (r) { return r.time; });
+      var distinct = t.every(function (v, i) { return typeof v === 'number' && t.indexOf(v) === i; });
+      if (!distinct || !rs.some(function (r) { return r.dnf; })) console.error('autoplay: results incomplete or times not distinct');
+      window.__autoplayResults = rs.length;
+    });
+    if (window.setTimeout) window.setTimeout(function () { if (window.__autoplayResults !== 4) console.error('autoplay: results table not complete after 60 s'); }, 60000);
+  }
   race.on('onReset', function () { logLines = []; logEl.textContent = ''; logEvent('onReset'); });
 
   var keys = {}, forceWrong = false;
