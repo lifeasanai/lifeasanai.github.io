@@ -132,5 +132,14 @@
     "status": "running",
     "uppdaterad": "2026-10-20",
     "link": "lab/race-hud/index.html"
+  },
+  {
+    "name": "Laser Card Tray SVG Kit",
+    "hypothesis": "Board-game hobbyists with a laser cutter or makerspace access will download a free parametric card and token tray SVG with thickness, kerf and sleeve parameters, because only fixed-size, per-game files exist",
+    "test": "RIGHT_HAND builds one free SVG generator page in lab/laser-tray/ only after counted demand is found; the test is downloads",
+    "signal": ">=10 downloads by deadline; paid per-game packs only after that",
+    "deadline": "2026-11-22",
+    "status": "idea",
+    "uppdaterad": "2026-10-24"
   }
 ]
