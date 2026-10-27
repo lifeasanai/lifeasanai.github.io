@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <link rel="icon" href="data:,">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Stop rewriting lap timers: Race HUD Kit with lap timer, wrong-way, DNF results</title>
-<meta property="og:title" content="Stop rewriting lap timers: Race HUD Kit">
+<title>Race HUD Kit: a tested lap/finish/DNF event API for web games</title>
+<meta property="og:title" content="Race HUD Kit: a tested lap/finish/DNF event API for web games">
 <meta property="og:image" content="results.png">
-<meta name="description" content="Stop rewriting lap timers. Dependency-free JS race HUD kit for 2D Canvas (runnable Phaser 3.90 and three.js r160 example pages included): lap timer, wrong-way warning, DNF results, per-car clocks, onResults events. MIT licensed.">
+<meta name="description" content="Stop rewriting lap timers: a tested lap/finish/DNF event API for web games. Dependency-free JS race HUD kit for 2D Canvas (runnable Phaser 3.90 and three.js r160 example pages included): lap timer, wrong-way warning, DNF results, per-car clocks, onResults events. MIT licensed.">
 <style>
   html, body { margin: 0; background: #101418; color: #ddd; font-family: Arial, Helvetica, sans-serif; }
   #wrap { max-width: 900px; margin: 0 auto; padding: 8px; text-align: center; }
@@ -29,7 +29,7 @@
 </head>
 <body>
 <div id="wrap">
-  <h1>Race HUD Kit: lap timer, wrong-way, DNF results</h1>
+  <h1>Race HUD Kit: a tested lap/finish/DNF event API for web games</h1>
   <p class="badges"><span>Canvas-based</span><span>Phaser 3.90 + three.js r160 examples (browser-checked)</span></p>
   <p id="lead">A tested event API for racing games: per-car clocks, live <code>onResults</code>, <code>close()</code>, and an edge-case suite (lap-invalid, wrong-way, DNF, duplicate finish ignored). The HUD drawing is the easy part; the demo below runs it.</p>
   <img id="shot" src="results.png" alt="Results screen: You, Bot 1, Bot 2 with times, Bot 3 DNF" style="max-width:100%;border-radius:6px">
@@ -38,7 +38,7 @@ var race = new RaceKit.RaceSession({ laps: 3, trackId: "oval", storage: localSto
 var hud = new RaceKit.RaceHud(race);
 race.on("onResults", function (r) { console.log(r); });
 race.start(); // each frame: race.update(dt); hud.draw(ctx, w, h, dt);</pre>
-  <p><a class="btn" id="run-test" href="?autoplay=1">Run edge-case test</a> <a class="btn alt" id="dl-zip" href="racekit-hud.zip" download>Download zip <span class="cnt" id="dl-count"></span></a> <button class="btn" id="copy-snippet" type="button">Copy integration snippet <span class="cnt" id="copy-count"></span></button> <a class="btn alt" href="index.html">Drive it yourself</a></p>
+  <p><button class="btn" id="try10" type="button">Try in 10 seconds</button> <button class="btn alt" id="copy-bug" type="button">Copy bug-report line</button> <span id="bug-line" style="font-size:12px;opacity:.8">Race HUD Kit bug: &lt;event&gt;, &lt;expected&gt;, &lt;got&gt;</span><br><a class="btn" id="run-test" href="?autoplay=1">Run edge-case test</a> <a class="btn alt" id="dl-zip" href="racekit-hud.zip" download>Download zip <span class="cnt" id="dl-count"></span></a> <button class="btn" id="copy-snippet" type="button">Copy integration snippet <span class="cnt" id="copy-count"></span></button> <a class="btn alt" href="index.html">Drive it yourself</a></p>
   <canvas id="c" width="800" height="450"></canvas>
   <p><kbd>&uarr;</kbd> gas &nbsp; <kbd>&darr;</kbd> brake &nbsp; <kbd>&larr;</kbd><kbd>&rarr;</kbd> steer &nbsp; <kbd>Enter</kbd> start &nbsp; <kbd>W</kbd> toggle wrong-way test (only shown while racing) &nbsp; Touch: tap the canvas, then use the on-screen buttons. &nbsp; After the race: <kbd>R</kbd> restart, <kbd>N</kbd> next race (or click).</p>
   <div id="log" aria-label="Live event log"></div>
@@ -46,7 +46,7 @@ race.start(); // each frame: race.update(dt); hud.draw(ctx, w, h, dt);</pre>
   <pre id="snip"></pre>
   <p style="font-size:12px;opacity:.8">Use counter: no cookies, no personal data. The numbers on the buttons are clicks counted in <em>your</em> browser only (localStorage). The page owner cannot see them: counting visits across users needs a server endpoint, and none is configured (see README).</p>
   <div id="tested">
-    <strong>What is tested</strong> (<code>python test_race_core.py</code>, 8 tests):
+    <strong>What is tested</strong> (<code>python test_race_core.py</code>, 9 tests):
     <ul>
       <li>Race state machine and event API: countdown, start, checkpoint, lap, finish, personal best, route.</li>
       <li><code>onLapInvalid</code>: a shortcut lap is rejected with "missed checkpoint 2".</li>
@@ -91,6 +91,12 @@ race.start(); // each frame: race.update(dt); hud.draw(ctx, w, h, dt);</pre>
     snip.style.display = 'block';
     try { navigator.clipboard.writeText(SNIPPET).catch(function () {}); } catch (e) {}
   });
+  var BUG = 'Race HUD Kit bug: <event>, <expected>, <got>';
+  document.getElementById('copy-bug').addEventListener('click', function () {
+    bump('bug');
+    try { navigator.clipboard.writeText(BUG).catch(function () {}); } catch (e) {}
+    document.getElementById('bug-line').textContent = BUG + ' (copied)';
+  });
 })();
 </script>
 <script>
@@ -110,6 +116,12 @@ race.start(); // each frame: race.update(dt); hud.draw(ctx, w, h, dt);</pre>
   var trackIx = 0;
   var race = new RK.RaceSession({ laps: 3, countdownSeconds: AUTO ? 1 : 3, checkpoints: 3, trackId: 'demo-oval', storage: store, nextRaces: ['oval-b'] });
   var hud = new RK.RaceHud(race);
+  window.__race = race; // read by tests/copytest.html
+
+  document.getElementById('try10').addEventListener('click', function () {
+    if (race.phase === 'idle') race.start();
+    canvas.scrollIntoView({ block: 'center' });
+  });
 
   var START = -0.12; // start angle (just before the line at angle 0)
   var car, bots;
