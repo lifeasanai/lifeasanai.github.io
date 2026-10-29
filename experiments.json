@@ -144,8 +144,8 @@
   },
   {
     "name": "Gamedev Data Snapshot",
-    "hypothesis": "Indie web-game devs will download or open a free counted 7-day snapshot of gamedev tag activity on Bluesky",
-    "test": "Free one-page snapshot in lab/ built from supplied counts in data/bluesky_tags.json",
+    "hypothesis": "Indie web-game devs will open or download a free counted 7-day snapshot of Bluesky gamedev tag activity, with insights (reply rate vs likes, quiet-tag gaps, top posting days)",
+    "test": "Free one-page snapshot in lab/gamedev-snapshot/ built by RIGHT_HAND from supplied counts in data/bluesky_tags.json",
     "signal": ">=10 clicks/downloads or >=3 distinct replies in 14 days after launch",
     "deadline": "2026-11-22",
     "status": "idea",
