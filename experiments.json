@@ -141,5 +141,14 @@
     "deadline": "2026-11-22",
     "status": "idea",
     "uppdaterad": "2026-10-25"
+  },
+  {
+    "name": "Gamedev Data Snapshot",
+    "hypothesis": "Indie web-game devs will download or open a free counted 7-day snapshot of gamedev tag activity on Bluesky",
+    "test": "Free one-page snapshot in lab/ built from supplied counts in data/bluesky_tags.json",
+    "signal": ">=10 clicks/downloads or >=3 distinct replies in 14 days after launch",
+    "deadline": "2026-11-22",
+    "status": "idea",
+    "uppdaterad": "2026-10-29"
   }
 ]
