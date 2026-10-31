@@ -21,6 +21,7 @@
   .cnt { font-weight: normal; font-size: 12px; opacity: .8; }
   #snip0, #snip { text-align: left; background: #0a0c14; color: #cde; font: 12px/1.4 Consolas, monospace; padding: 8px; border-radius: 6px; white-space: pre; overflow-x: auto; display: none; }
   #snip0 { display: block; }
+  #snip-phaser { text-align: left; background: #0a0c14; color: #cde; font: 12px/1.4 Consolas, monospace; padding: 8px; border-radius: 6px; white-space: pre; overflow-x: auto; }
   .btn.alt { background: #2d3a4a; color: #fff; }
   .badges span { display: inline-block; background: #1d3a2a; color: #9fe8b0; border-radius: 12px; padding: 2px 10px; margin: 2px; font-size: 12px; }
   #tested { text-align: left; background: #151b22; border-radius: 6px; padding: 6px 14px; font-size: 14px; }
@@ -37,9 +38,24 @@
 var race = new RaceKit.RaceSession({ laps: 3, trackId: "oval", storage: localStorage }), hud = new RaceKit.RaceHud(race);
 race.on("onResults", function (r) { console.log(r); }); race.start();
 // each frame: race.update(dt); hud.draw(ctx, w, h, dt);</pre>
-  <p><button class="btn" id="try10" type="button">Try in 10 seconds</button></p>
+  <p><button class="btn" id="try10" type="button">Try in 10 seconds</button> <a class="btn alt" id="dl-zip" href="racekit-hud.zip" download>Download zip (MIT) <span class="cnt" id="dl-count"></span></a> </p>
   <canvas id="c" width="800" height="450"></canvas>
-  <p><a class="btn" id="run-test" href="?autoplay=1">Run edge-case test</a> <a class="btn alt" id="dl-zip" href="racekit-hud.zip" download>Download zip <span class="cnt" id="dl-count"></span></a> <button class="btn" id="copy-snippet" type="button">Copy integration snippet <span class="cnt" id="copy-count"></span></button> <a class="btn alt" href="index.html">Drive it yourself</a></p>
+  <p style="text-align:left"><strong>Phaser 3 snippet</strong> (from <code>examples/phaser.html</code>, runs against the vendored Phaser 3.90.0):</p>
+  <pre id="snip-phaser">const race = new RaceKit.RaceSession({ laps: 3, trackId: 'phaser-demo' });
+const hud = new RaceKit.RaceHud(race);
+race.on('onResults', (r) =&gt; console.log('results', r));
+race.on('onLapInvalid', (e) =&gt; console.log('lap invalid', e));
+const hudCanvas = Object.assign(document.createElement('canvas'), { width: 800, height: 450 });
+const hudCtx = hudCanvas.getContext('2d'); let tex;
+function tick(dt) {
+  race.update(dt);
+  hudCtx.clearRect(0, 0, 800, 450); hud.draw(hudCtx, 800, 450, dt);
+  if (tex) tex.refresh();
+}
+new Phaser.Game({ type: Phaser.CANVAS, width: 800, height: 450, scene: {
+  create() { tex = this.textures.addCanvas('hud', hudCanvas); this.add.image(0, 0, 'hud').setOrigin(0); race.start(); },
+  update(time, delta) { tick(delta / 1000); } } });</pre>
+  <p><a class="btn" id="run-test" href="?autoplay=1">Run edge-case test</a> <button class="btn" id="copy-snippet" type="button">Copy integration snippet <span class="cnt" id="copy-count"></span></button> <a class="btn alt" href="index.html">Drive it yourself</a></p>
   <p><button class="btn alt" id="copy-bug" type="button">Copy bug-report line</button> <span id="bug-note">Found a race bug? Copy this line and post it with #racinggame:</span> <span id="bug-line" style="font-size:12px;opacity:.8">Race HUD Kit bug: &lt;event&gt;, &lt;expected&gt;, &lt;got&gt;</span></p>
   <p><kbd>&uarr;</kbd> gas &nbsp; <kbd>&darr;</kbd> brake &nbsp; <kbd>&larr;</kbd><kbd>&rarr;</kbd> steer &nbsp; <kbd>Enter</kbd> start &nbsp; <kbd>W</kbd> toggle wrong-way test (only shown while racing) &nbsp; Touch: tap the canvas, then use the on-screen buttons. &nbsp; After the race: <kbd>R</kbd> restart, <kbd>N</kbd> next race (or click).</p>
   <div id="log" aria-label="Live event log"></div>
