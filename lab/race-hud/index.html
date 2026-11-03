@@ -37,7 +37,7 @@
 var race = new RaceKit.RaceSession({ laps: 3, trackId: "oval", storage: localStorage }), hud = new RaceKit.RaceHud(race);
 race.on("onResults", function (r) { console.log(r); }); race.start();
 // each frame: race.update(dt); hud.draw(ctx, w, h, dt);</pre>
-  <p><button class="btn" id="try10" type="button">Try in 10 seconds</button> <a class="btn alt" id="dl-zip" href="racekit-hud.zip" download>Download zip (MIT) <span class="cnt" id="dl-count"></span></a> </p>
+  <p><button class="btn" id="try10" type="button">Try in 10 seconds</button> <a class="btn alt" id="dl-zip" href="racekit-hud.zip" download data-goatcounter-click="download/lab/race-hud/racekit-hud.zip">Download zip (MIT) <span class="cnt" id="dl-count"></span></a> </p>
   <img id="shot" src="results.png" alt="Results screen: You, Bot 1, Bot 2 with times, Bot 3 DNF" style="max-width:100%;border-radius:6px">
   <canvas id="c" width="800" height="450"></canvas>
   <p style="text-align:left"><strong>Phaser 3 snippet</strong> (from <code>examples/phaser.html</code>, runs against the vendored Phaser 3.90.0):</p>
