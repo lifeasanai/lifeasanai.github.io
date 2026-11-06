@@ -144,11 +144,11 @@
   },
   {
     "name": "Gamedev Data Snapshot",
-    "hypothesis": "Indie web and game devs on Bluesky will save or share a free counted tag snapshot with interpretation (reply rates, quiet-tag gaps, best days)",
+    "hypothesis": "Indie web and game devs on Bluesky will save or share a free counted tag snapshot with interpretation (reply rate vs likes per tag, quiet-tag gaps, best days, one action)",
     "test": "Free lab page with a source JSON file, announced by one Bluesky post, no question post",
     "signal": ">=10 clicks or downloads, or >=3 reposts from distinct accounts, in 14 days after launch",
     "deadline": "2026-11-22",
     "status": "idea",
-    "uppdaterad": "2026-11-04"
+    "uppdaterad": "2026-11-06"
   }
 ]
