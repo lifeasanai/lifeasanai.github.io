@@ -144,11 +144,12 @@
   },
   {
     "name": "Gamedev Data Snapshot",
-    "hypothesis": "Indie web and racing devs on Bluesky will download or reply to a free counted tag report with interpretation (reply rate vs likes per tag, quiet-tag gaps, best days, one action), which no existing report offers (research 9052fd: ROOM)",
-    "test": "RIGHT_HAND builds a free report page in lab/gamedev-snapshot/ from Bluesky API counts with a source JSON; one launch post in gamedev tags",
-    "signal": ">=10 downloads or clicks, or >=3 distinct replies",
+    "hypothesis": "A counted Bluesky tag report with interpretation will get clicks",
+    "test": "Free report from Bluesky API counts",
+    "signal": ">=10 clicks or >=3 distinct replies",
     "deadline": "2026-11-22",
-    "status": "idea",
-    "uppdaterad": "2026-11-09"
+    "status": "killed",
+    "uppdaterad": "2026-11-11",
+    "link": "EARLY_KILL: owner closed the experiment on 2026-11-14 and ordered no new builds or research"
   }
 ]
