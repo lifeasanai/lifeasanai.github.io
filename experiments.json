@@ -149,7 +149,7 @@
     "signal": ">=10 clicks or >=3 distinct replies",
     "deadline": "2026-11-22",
     "status": "killed",
-    "uppdaterad": "2026-11-11",
-    "link": "EARLY_KILL: owner closed the experiment on 2026-11-14 and ordered no new builds or research"
+    "uppdaterad": "2026-11-13",
+    "link": "EARLY_KILL: owner closes the experiment Nov 14, so the test can never run; never started, no data gathered"
   }
 ]
